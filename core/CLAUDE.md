@@ -20,6 +20,7 @@
 - Read tasks/lessons.md at start of every session before doing anything
 
 # stamflow
+- `/stamflow dashboard` — Terminal dashboard: project metrics, recommendations, security
 - `/stamflow plan` — Discovery interview → Agent deployment plan
 - `/stamflow deploy` — Deploy agents to current project
 - `/stamflow swarm` — Start multi-agent swarm
