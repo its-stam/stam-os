@@ -74,7 +74,6 @@ if [[ $SKIP_HOOKS -ne 1 ]]; then
   else
     info "no settings template — skip. Add gates to your ~/.claude/settings.json manually."
   fi
-  fi
 fi
 
 # --- Layer 0: Agents ---

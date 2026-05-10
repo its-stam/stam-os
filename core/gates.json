@@ -5,7 +5,7 @@
     {
       "name": "no-force-push",
       "tool": "Bash",
-      "pattern": "(?i)push.*--force|push.*-f\\b",
+      "pattern": "(?i)git\\s+push\\b.*\\s(--force|-f)(\\s|$)",
       "level": "block",
       "message": "Force push blocked. Use regular push or ask first.",
       "enabled": true
