@@ -14,6 +14,15 @@
 - Before closing, check for uncommitted changes and remind me to commit
 - When context reaches ~70%, rewrite primer.md with current state, tell me to /compact
 
+# EXECUTION STANDARDS (Boris Cherny / Antigravity Principles)
+- **Plan First**: Enter plan mode for ANY non-trivial task (3+ steps or architectural changes). If something goes sideways, STOP and re-plan.
+- **Subagent Strategy**: Offload research, exploration, and parallel work to subagents. Keeps main context clean. One task per subagent.
+- **Verification**: Never mark a task complete without proving it works. Run tests, check logs, diff behavior. Ask: "Would a staff engineer approve this?"
+- **Demand Elegance**: For non-trivial changes: pause and ask "is there a more elegant way?" Skip for simple fixes — don't over-engineer.
+- **Autonomous Bug Fixing**: When given a bug: just fix it. Point at logs/errors/tests. Zero hand-holding required.
+- **Simplicity First**: Make every change as simple as possible. Minimal code impact.
+- **No Laziness**: Find root causes. No temporary fixes. No TODO markers for problems you can solve now.
+
 # SELF-LEARNING
 - After any correction, immediately add an entry to tasks/lessons.md
 - Format: [date] | what went wrong | rule to follow next time
