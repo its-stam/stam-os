@@ -26,8 +26,11 @@
 - `/stamflow gate` — Manage safety gates
 - `/stamflow status` — Check running agents and progress
 - `/stamflow graph` — Input → Knowledge Graph → Obsidian
-- `/stamflow check` — Code Health: ShellCheck, gates, perms, complexity
-- `/stamflow secure` — Security: secrets, SAST, prompt injection, dependencies
+- `/stamflow test --all` — Run ALL tests (code + security + agents + gates)
+- `/stamflow test --code` — Code Health: ShellCheck, perms, complexity
+- `/stamflow test --security` — Security: secrets, SAST, prompt injection, deps
+- `/stamflow test --agents` — Agents: frontmatter, duplicates, size check
+- `/stamflow test --gates` — Gates: regex validation + edge case fuzzing
 
 # Planmode
 When user triggers `/stamflow plan`, follow the discovery interview in core/planmode.md:

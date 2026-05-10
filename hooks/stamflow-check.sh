@@ -92,7 +92,7 @@ pass "file permissions checked"
 # 4. Dead Code / TODO Scan
 echo ""
 echo "▸ Dead Code"
-founds=$(grep -rn "TODO\|FIXME\|HACK\|XXX" --include="*.sh" --include="*.md" --include="*.py" . 2>/dev/null | grep -v ".git/" | wc -l | tr -d ' ')
+founds=$(grep -rn "TODO\|FIXME\|HACK\|XXX" --include="*.sh" --include="*.md" --include="*.py" . 2>/dev/null | grep -v ".git/" | grep -v "stamflow-check\|stamflow-secure" | wc -l | tr -d ' ')
 if [[ "$founds" -gt 0 ]]; then
   warn "$founds TODO/FIXME markers found"
 else
