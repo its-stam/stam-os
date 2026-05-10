@@ -105,7 +105,7 @@ ${BLD}${WHT}╠═════════════════════�
 ${BLD}${WHT}║${RST}${DIM}  Agents: ${BLD}${TOTAL}${RST}  |  ${GRN}🟢 ${sw} working${RST}  |  ${YLW}🟡 ${si} idle${RST}  |  ${RED}🔴 ${sb} blocked${RST}                         ${BLD}${WHT}║${RST}
 ${BLD}${WHT}╚══════════════════════════════════════════════════════════════╝${RST}
 
-  ${DIM}Commands:${RST} ${BLD}/stamflow plan${RST} • ${BLD}/stamflow test${RST} • ${BLD}/stamflow dashboard${RST}
+  ${DIM}Commands:${RST} ${BLD}/stamflow plan${RST} • ${BLD}/stamflow test${RST} • ${BLD}/stamflow dash${RST}
   ${DIM}$(date)${RST}
 BOT
 echo ""

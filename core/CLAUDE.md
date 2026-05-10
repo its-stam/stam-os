@@ -29,8 +29,8 @@
 - Read tasks/lessons.md at start of every session before doing anything
 
 # stamflow
+- `/stamflow dash` — Styled terminal dashboard: metrics, security, recommendations
 - `/stamflow view` — Terminal agent office visualization (3×4 grid, status colors)
-- `/stamflow dashboard` — Terminal dashboard: project metrics, recommendations, security
 - `/stamflow plan` — Discovery interview → Agent deployment plan
 - `/stamflow deploy` — Deploy agents to current project
 - `/stamflow swarm` — Start multi-agent swarm
@@ -42,6 +42,7 @@
 - `/stamflow test --security` — Security: secrets, SAST, prompt injection, deps
 - `/stamflow test --agents` — Agents: frontmatter, duplicates, size check
 - `/stamflow test --gates` — Gates: regex validation + edge case fuzzing
+- `/stamflow vet` — Thorough examination: 8 categories, 60+ checks, scored
 
 # Planmode
 When user triggers `/stamflow plan`, follow the discovery interview in core/planmode.md:
