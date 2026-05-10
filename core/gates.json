@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "description": "Pre-action gates — block or warn on dangerous tool calls. Survives context compaction.",
+  "gates": [
+    {
+      "name": "no-force-push",
+      "tool": "Bash",
+      "pattern": "push.*--force|push.*-f",
+      "level": "block",
+      "message": "Force push blocked. Use regular push or ask first.",
+      "enabled": true
+    },
+    {
+      "name": "no-rm-rf-root",
+      "tool": "Bash",
+      "pattern": "rm\\s+-rf\\s+/[^r]|rm\\s+-rf\\s+~",
+      "level": "block",
+      "message": "Destructive rm -rf on root/home blocked.",
+      "enabled": true
+    },
+    {
+      "name": "no-credentials-in-files",
+      "tool": "Write|Edit",
+      "pattern": "sk-ant-|sk-proj-|OPENAI_API_KEY|AWS_SECRET|DASHSCOPE_API_KEY|NVIDIA_API_KEY",
+      "level": "block",
+      "message": "Credential/API key detected. Use env vars instead.",
+      "enabled": true
+    },
+    {
+      "name": "no-git-reset-hard",
+      "tool": "Bash",
+      "pattern": "git\\s+reset\\s+--hard",
+      "level": "warn",
+      "message": "git reset --hard detected. Make sure this is intentional.",
+      "enabled": true
+    },
+    {
+      "name": "no-env-commit",
+      "tool": "Bash",
+      "pattern": "git\\s+add.*\\.env(?!\\.example)",
+      "level": "block",
+      "message": ".env file staged for commit. Run git reset HEAD .env to unstage.",
+      "enabled": true
+    }
+  ]
+}

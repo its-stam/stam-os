@@ -1,0 +1,6 @@
+# Skills (local only — NDA-protected, never commit)
+skills-local/
+*.env
+*.env.*
+.claude-flow/
+.DS_Store
