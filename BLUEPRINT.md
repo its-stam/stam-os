@@ -1,4 +1,4 @@
-# Agent OS — Blueprint
+# stam-os — Blueprint
 
 ## Mission
 **One config. Any AI tool. Never forgets. Never screws up.**

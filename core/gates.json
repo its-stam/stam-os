@@ -5,7 +5,7 @@
     {
       "name": "no-force-push",
       "tool": "Bash",
-      "pattern": "(?i)push.*--force|push.*-f",
+      "pattern": "(?i)push.*--force|push.*-f\\b",
       "level": "block",
       "message": "Force push blocked. Use regular push or ask first.",
       "enabled": true
@@ -13,9 +13,9 @@
     {
       "name": "no-rm-rf-root",
       "tool": "Bash",
-      "pattern": "(?i)rm\\s+-rf\\s+/[^r]|rm\\s+-rf\\s+~",
+      "pattern": "(?i)rm\\s+-[rRfF]+\\s+/(?:\\S+)?|rm\\s+-[rRfF]+\\s+\\.(?:\\s|$)|rm\\s+-[rRfF]+\\s+~(?:(?:\\s|/)|$)",
       "level": "block",
-      "message": "Destructive rm -rf on root/home blocked.",
+      "message": "Destructive rm -rf on root, home, or current dir blocked.",
       "enabled": true
     },
     {
@@ -40,6 +40,14 @@
       "pattern": "(?i)git\\s+add.*\\.env(?!\\.example)",
       "level": "block",
       "message": ".env file staged for commit. Run git reset HEAD .env to unstage.",
+      "enabled": true
+    },
+    {
+      "name": "no-bulk-git-add",
+      "tool": "Bash",
+      "pattern": "(?i)git\\s+add\\s+(-A|\\.)\\s*$",
+      "level": "warn",
+      "message": "git add -A or git add . may stage .env files. Check before committing.",
       "enabled": true
     }
   ]

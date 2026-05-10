@@ -22,6 +22,9 @@ gates_path = os.path.expanduser('~/.claude/gates.json')
 with open(gates_path) as f:
     gates = json.load(f)
 
+blocks = []
+warns = []
+
 for gate in gates.get('gates', []):
     if not gate.get('enabled', True):
         continue
@@ -35,12 +38,16 @@ for gate in gates.get('gates', []):
     level = gate.get('level', 'warn')
     message = gate.get('message', 'Blocked by gate')
     if level == 'block':
-        print(f'BLOCK|{message}')
-    elif level == 'warn':
-        print(f'WARN|{message}')
-    sys.exit(0)
+        blocks.append(message)
+    else:
+        warns.append(message)
 
-print('ALLOW|')
+if blocks:
+    print(f\"BLOCK|{'; '.join(blocks)}\")
+elif warns:
+    print(f\"WARN|{'; '.join(warns)}\")
+else:
+    print('ALLOW|')
 " 2>/dev/null)
 
 ACTION=$(echo "$RESULT" | cut -d'|' -f1)

@@ -53,7 +53,7 @@ mkdir -p ~/.claude
 safe_copy "$REPO_DIR/core/CLAUDE.md" ~/.claude/CLAUDE.md
 safe_copy "$REPO_DIR/core/primer.md" ~/.claude/primer.md
 safe_copy "$REPO_DIR/core/gates.json" ~/.claude/gates.json
-safe_copy "$REPO_DIR/core/lessons.md" ../tasks/lessons.md
+safe_copy "$REPO_DIR/core/lessons.md" "$HOME/tasks/lessons.md"
 
 # --- Layer 4: Hooks ---
 if [[ $SKIP_HOOKS -ne 1 ]]; then
@@ -69,9 +69,11 @@ if [[ $SKIP_HOOKS -ne 1 ]]; then
   # Merge settings.json hooks (add gates + post-compact if not present)
   if [[ -f ~/.claude/settings.json ]]; then
     info "settings.json exists — merge hooks manually: docs/INSTALL.md#hooks"
+  elif [[ -f "$REPO_DIR/core/settings.template.json" ]]; then
+    safe_copy "$REPO_DIR/core/settings.template.json" ~/.claude/settings.json
   else
-    cp "$REPO_DIR/core/settings.template.json" ~/.claude/settings.json
-    info "settings.json installed from template"
+    info "no settings template — skip. Add gates to your ~/.claude/settings.json manually."
+  fi
   fi
 fi
 

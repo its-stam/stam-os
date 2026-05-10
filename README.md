@@ -29,7 +29,7 @@ LAYER 4: Hooks                ← Session Lifecycle
 LAYER 3: GATES                ← Pre-Action Enforcement
 LAYER 2: State                ← Auto-Rewriting (primer.md)
 LAYER 1: Rules                ← Immutable (CLAUDE.md)
-LAYER 0: Agents               ← 184+ Personas
+LAYER 0: Agents               ← 41 Curated
 ```
 
 ---
@@ -48,10 +48,10 @@ Setup auto-detects what's installed and skips conflicts. Nothing overwritten wit
 
 ```
 /stamflow plan    → Discovery interview → auto-select agents + gates
-/stamflow deploy  → Deploy agents to current project
-/stamflow swarm   → Start multi-agent swarm (requires Ruflo)
-/stamflow gate    → Manage safety gates
-/stamflow status  → Check running agents and progress
+/stamflow dash    → Styled terminal dashboard with metrics
+/stamflow view    → Agent office visualization (3×4 desk grid)
+/stamflow vet     → Thorough exam (8 categories, 60+ checks, scored)
+/stamflow test    → Code + Security + Agents + Gates (--all, --code, --security, --agents, --gates)
 /stamflow graph   → Input → Knowledge Graph → Obsidian
 /graphify         → Convert any input to knowledge graph
 ```
@@ -64,7 +64,7 @@ Setup auto-detects what's installed and skips conflicts. Nothing overwritten wit
 |-----------|--------|------|
 | **Gates** | recall-stack | Pre-action enforcement (survives compaction) |
 | **primer.md** | recall-stack | Auto-rewriting project state |
-| **Agents** | agency-agents | 184+ specialized personas |
+| **Agents** | agency-agents | 41 curated specialists |
 | **Swarm** | ruflo (optional) | Multi-agent coordination |
 | **Graphify** | built-in | Input → Knowledge Graph |
 | **Obsidian** | templates included | Vault structure + daily notes |
@@ -77,13 +77,11 @@ Setup auto-detects what's installed and skips conflicts. Nothing overwritten wit
 stam-os/
 ├── core/           # Layer 1-3 (always, no deps)
 ├── hooks/          # Layer 4 (shell scripts)
-├── agents/         # Layer 0 (184+ personas)
-├── converters/     # Multi-tool exporters
+├── agents/         # Layer 0 (41 curated agents)
+├── converters/     # Multi-tool exporters (claude/opencode/cursor)
 ├── graphify/       # Layer 5b (knowledge graph)
-├── obsidian/       # Layer 5a (vault templates)
-├── plugins/        # Optional integrations
-├── docs/           # Guides
-└── skills/         # Domain skill templates
+├── skills/         # Domain skill templates (NDA-safe)
+└── docs/           # Guides
 ```
 
 ---
