@@ -27,6 +27,8 @@
 - After any correction, immediately add an entry to tasks/lessons.md
 - Format: [date] | what went wrong | rule to follow next time
 - Read tasks/lessons.md at start of every session before doing anything
+- Run `/retrospective` at session end (before `/save-context`) — audits the session, surfaces stale docs, workflow gaps, and patterns worth saving. Stays silent if nothing to improve.
+- Retro findings live in core/retro-log.md. Search with `/stamflow recall "retro finding <topic>"`.
 
 # stamflow
 - `/stamflow dash` — Styled terminal dashboard: metrics, security, recommendations
@@ -37,12 +39,17 @@
 - `/stamflow gate` — Manage safety gates
 - `/stamflow status` — Check running agents and progress
 - `/stamflow graph` — Input → Knowledge Graph → Obsidian
+- `/stamflow recall <query>` — Hybrid search: BM25 + Vector + Graph → RRF fusion
+- `/stamflow recall --rebuild` — Rebuild search index
+- `/stamflow recall --status` — Show index statistics
+- `/stamflow recall --mode hybrid|manual` — Toggle hybrid retrieval on/off
 - `/stamflow test --all` — Run ALL tests (code + security + agents + gates)
 - `/stamflow test --code` — Code Health: ShellCheck, perms, complexity
 - `/stamflow test --security` — Security: secrets, SAST, prompt injection, deps
 - `/stamflow test --agents` — Agents: frontmatter, duplicates, size check
 - `/stamflow test --gates` — Gates: regex validation + edge case fuzzing
 - `/stamflow vet` — Thorough examination: 8 categories, 60+ checks, scored
+- `/retrospective` — Session audit: stale docs, workflow gaps, patterns. Silent if clean.
 
 # Planmode
 When user triggers `/stamflow plan`, follow the discovery interview in core/planmode.md:

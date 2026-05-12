@@ -4,3 +4,7 @@ skills-local/
 *.env.*
 .claude-flow/
 .DS_Store
+recall/__pycache__/
+recall/*.db
+recall/*.npy
+recall/bm25_meta.json

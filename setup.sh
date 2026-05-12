@@ -49,11 +49,11 @@ echo ""
 
 # --- Layer 1-2: Rules + State ---
 echo "▸ Core (Layer 1-3)"
-mkdir -p ~/.claude
+mkdir -p ~/.claude ~/tasks
 safe_copy "$REPO_DIR/core/CLAUDE.md" ~/.claude/CLAUDE.md
 safe_copy "$REPO_DIR/core/primer.md" ~/.claude/primer.md
 safe_copy "$REPO_DIR/core/gates.json" ~/.claude/gates.json
-safe_copy "$REPO_DIR/core/lessons.md" "$HOME/tasks/lessons.md"
+safe_copy "$REPO_DIR/core/lessons.md" ~/tasks/lessons.md
 
 # --- Layer 4: Hooks ---
 if [[ $SKIP_HOOKS -ne 1 ]]; then
@@ -118,6 +118,26 @@ if [[ -d ~/Documents/Obsidian\ Vault ]] || [[ -d ~/Desktop/UNI ]]; then
   info "Templates in obsidian/ — copy manually or use /stamflow vault"
 else
   warn "No Obsidian vault found. Install Obsidian from https://obsidian.md"
+fi
+
+# --- Layer 6: Recall (Hybrid Retrieval) ---
+echo ""
+echo "▸ Recall — Hybrid Retrieval (Layer 6)"
+if [[ -f "$REPO_DIR/recall/recall.sh" ]]; then
+  chmod +x "$REPO_DIR/recall/recall.sh"
+  PIP_BIN="python3"
+  if command -v python3.11 &>/dev/null; then
+    PIP_BIN="python3.11"
+  fi
+  if "$PIP_BIN" -c "import sentence_transformers" 2>/dev/null; then
+    info "recall/ ready — sentence-transformers OK"
+    info "Run: ./recall/recall.sh --rebuild"
+  else
+    warn "recall/ copied but sentence-transformers not installed"
+    warn "Run: $PIP_BIN -m pip install -r recall/requirements.txt"
+  fi
+else
+  warn "recall/ directory not found"
 fi
 
 echo ""
