@@ -50,6 +50,7 @@ Ein einheitlicher Standard für AI-Agent-Konfiguration, der über Claude Code, O
 ├─────────────────────────────────────────────────┤
 │ LAYER 2: State (Auto-Rewriting)                 │
 │ primer.md — Projekt-Status, nächster Task       │
+│ retro-log.md — Session-Audit, akkumuliert       │
 │ → Schreibt nach jedem Task, überlebt Crashes    │
 ├─────────────────────────────────────────────────┤
 │ LAYER 1: Rules (Immutable)                      │
@@ -74,6 +75,7 @@ agent-os/
 ├── core/                        # Layer 1-3 (immer, keine Dependencies)
 │   ├── CLAUDE.md                # Master-Regeln
 │   ├── primer.md                # Auto-Rewriting State
+│   ├── retro-log.md             # Session-Audit Log
 │   ├── gates.json               # Safety Gates
 │   └── lessons.md               # Self-Learning Log
 │
@@ -100,6 +102,8 @@ agent-os/
 │   └── to-gemini.sh             # → ~/.gemini/extensions/
 │
 ├── skills/                      # Domain-Skills (Templates, keine NDA-Daten!)
+│   ├── retrospective/            #   Session-Audit Skill
+│   │   └── SKILL.md
 │   ├── SKILL_TEMPLATE.md         # Vorlage für eigene Skills
 │   ├── example-project.md        # Generisches Beispiel (kein Kundenprojekt)
 │   └── .gitignore                # Schützt lokale NDA-Skills
@@ -161,6 +165,7 @@ Setup erkennt automatisch:
 5. **Obsidian-Vault-Templates** — Vorgefertigte Struktur für Daily Notes, Projekte, Lernen
 6. **Domain-Skills** — Template-basiert, NDA-geschützt via `.gitignore` (lokal = privat, repo = generisch)
 7. **Multi-Tool-Konvertierung** — Gleicher Agent läuft in Claude, OpenCode, Cursor, Gemini
+8. **Retrospective Audit** — Session-End-Check: Doku-Drift, Workflow-Friction, Patterns. Silence-Path bei sauberem Run.
 
 ## Naming
 
