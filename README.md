@@ -15,9 +15,9 @@ the synthetic fixtures in `tests/fixtures/` plus one real config.
 | Start-load, synthetic fixture, layered (same content, split by layer) | 7,740 bytes |
 | Ratio | 4.35x smaller |
 | Total corpus, monolithic vs. layered fixture | 33,659 vs. 34,620 bytes (2.8% apart) |
-| Author's own config, live run: loaded at start | 112,870 bytes |
-| Author's own config, live run: available on demand | 3,346,950 bytes |
-| Author's own config, live run: flags raised | 1 |
+| Author's own config, live run (2026-09-11): loaded at start | 112,870 bytes |
+| Author's own config, live run (2026-09-11): available on demand | 3,346,950 bytes |
+| Author's own config, live run (2026-09-11): flags raised | 1 |
 | Gate test cases (`tests/test_gates.sh`) | 10/10 passed |
 | Three-file recovery test (`tests/test_post_compact.sh`) | 8/8 passed |
 | Installer test (`tests/test_setup.sh`) | 11/11 passed |
