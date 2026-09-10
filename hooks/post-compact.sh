@@ -1,59 +1,46 @@
 #!/bin/bash
-# Fires after context compaction -- re-injects critical layers
-# Layers 1-2 (CLAUDE.md, primer.md) survive compaction (system prompt)
-# Layers 3-4 (git context, Hindsight) live in conversation and get compacted
-# This hook re-injects them
+# Fires after context compaction -- proves three-file recovery.
+# A session must be able to resume from just: primer + ledger + latest checkpoint.
+# No network calls: everything here is local file reads.
 
-HINDSIGHT_URL="${HINDSIGHT_URL:-http://localhost:8888}"
+CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 
 echo "## Post-Compaction Re-injection"
 echo ""
 
-# Re-inject git context (Layer 3)
-if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-  echo "### Git (re-injected)"
-  echo "**Branch:** $(git branch --show-current 2>/dev/null)"
-  echo "**Last 3 commits:**"
-  git log --oneline -3 2>/dev/null
-  MODIFIED=$(git status --short 2>/dev/null)
-  if [ -n "$MODIFIED" ]; then
-    echo "**Modified:** $MODIFIED"
-  fi
+# --- L1: Primer (routing/state) ---
+PRIMER="$CONFIG_DIR/primer.md"
+if [ -f "$PRIMER" ]; then
+  echo "### Primer"
+  cat "$PRIMER"
   echo ""
 fi
 
-# Re-inject Hindsight patterns (Layer 4) -- top 5 only
-RECALL_JSON=$(curl -sf -m 5 -X POST "$HINDSIGHT_URL/v1/default/banks/claude-sessions/memories/recall" \
-  -H 'Content-Type: application/json' \
-  -d '{"query": "corrections and mistakes to avoid", "n": 5}' \
-  2>/dev/null)
+# --- L3: Ledger (working artifact, tail only) ---
+LEDGER="$CONFIG_DIR/coordination/ledger.md"
+if [ -f "$LEDGER" ]; then
+  echo "### Ledger (tail)"
+  tail -10 "$LEDGER"
+  echo ""
+fi
 
-if [ -n "$RECALL_JSON" ] && [ "$RECALL_JSON" != "null" ]; then
-  PATTERNS=$(echo "$RECALL_JSON" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-    seen = set()
-    for r in data.get('results', [])[:5]:
-        t = r.get('text', '')
-        if t and t not in seen:
-            seen.add(t)
-            print(f'- {t}')
-except: pass
-" 2>/dev/null)
-
-  if [ -n "$PATTERNS" ]; then
-    echo "### Critical Patterns (re-injected)"
-    echo "$PATTERNS"
+# --- L3: Latest checkpoint (header only) ---
+CHECKPOINT_DIR="$CONFIG_DIR/checkpoints"
+if [ -d "$CHECKPOINT_DIR" ]; then
+  LATEST=$(ls -1 "$CHECKPOINT_DIR" 2>/dev/null | sort | tail -1)
+  if [ -n "$LATEST" ]; then
+    echo "### Latest Checkpoint ($LATEST)"
+    head -5 "$CHECKPOINT_DIR/$LATEST"
     echo ""
   fi
 fi
 
-# Re-inject active gates as reminders
-if [ -f "$HOME/.claude/gates.json" ]; then
-  GATE_LIST=$(python3 -c "
-import json
-with open('$HOME/.claude/gates.json') as f:
+# --- L2: Active block-level gates (reminders) ---
+GATES_FILE="$CONFIG_DIR/gates.json"
+if [ -f "$GATES_FILE" ]; then
+  GATE_LIST=$(GATES_FILE="$GATES_FILE" python3 -c "
+import json, os
+with open(os.environ['GATES_FILE']) as f:
     gates = json.load(f)
 for g in gates.get('gates', []):
     if g.get('enabled', True) and g.get('level') == 'block':

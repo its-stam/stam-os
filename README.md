@@ -1,91 +1,115 @@
-# stam-os — Operating System for AI Agents
+# stam-os
 
-> One config. Any AI tool. Never forgets. Never screws up.
+A file layout that keeps an agent's session context small and recoverable:
+routing files stay within a budget, detail lives one layer down, and a
+session resumes after a crash or compaction from three files.
 
-**stam-os** is a unified standard for AI agent configuration. Works across Claude Code, OpenCode, Cursor, Gemini CLI, and more. No vendor lock-in. Open source. MIT.
+## Results
 
-Built by [Rustam Kohen](https://github.com/its-stam).
+Numbers from `./test.sh`, and from `bin/context-budget.py` run against
+the synthetic fixtures in `tests/fixtures/` plus one real config.
 
----
+| Measurement | Value |
+|---|---|
+| Start-load, synthetic fixture, monolithic (one file, everything inline) | 33,659 bytes |
+| Start-load, synthetic fixture, layered (same content, split by layer) | 7,740 bytes |
+| Ratio | 4.35x smaller |
+| Total corpus, monolithic vs. layered fixture | 33,659 vs. 34,620 bytes (2.8% apart) |
+| Author's own config, live run: loaded at start | 112,870 bytes |
+| Author's own config, live run: available on demand | 3,346,950 bytes |
+| Author's own config, live run: flags raised | 1 |
+| Gate test cases (`tests/test_gates.sh`) | 10/10 passed |
+| Three-file recovery test (`tests/test_post_compact.sh`) | 8/8 passed |
+| Installer test (`tests/test_setup.sh`) | 11/11 passed |
+| Auto-promotion test (`tests/test_session_end.sh`) | 4/4 passed |
+| Budget unit tests (`tests/test_context_budget.py`) | 4/4 passed |
+| `./test.sh` | 37 passed, 0 failed |
 
-## What It Does
+Run it yourself: `./test.sh`.
 
-- **Never forgets** — 5-layer memory system (rules → state → hooks → memory → knowledge base)
-- **Never screws up** — Pre-action gates block force-push, rm -rf, credential leaks at tool level
-- **Learns** — 3x same mistake = auto-promotes from warn to block
-- **Works anywhere** — Convert agents between Claude Code, OpenCode, Cursor, Gemini CLI
-- **Graphify** — Input (code, docs, papers) → knowledge graph → Obsidian vault
+## How it works
 
----
+Four layers, each with its own budget:
 
-## Architecture
+| Layer | Contents | Budget |
+|---|---|---|
+| L0 Identity | `CLAUDE.md` | <= 200 lines |
+| L1 Routing/State | `primer.md` | ~100 lines, hard cap 110 |
+| L2 Reference | `rules/`, `memory/`, `knowledge/` | <= 150 lines per file |
+| L3 Working artifacts | `coordination/`, checkpoints, journals | loaded on demand only |
 
-```
-LAYER 7: Swarm (optional)     ← ruflo-compatible
-LAYER 6: Memory (optional)    ← AgentDB + HNSW
-LAYER 5b: Graphify            ← Input → Knowledge Graph
-LAYER 5a: Knowledge Base      ← Obsidian Vault
-LAYER 4: Hooks                ← Session Lifecycle
-LAYER 3: GATES                ← Pre-Action Enforcement
-LAYER 2: State                ← Auto-Rewriting (primer.md)
-LAYER 1: Rules                ← Immutable (CLAUDE.md)
-LAYER 0: Agents               ← 41 Curated
-```
+Five rules (full text in `core/LAYERS.md`):
 
----
+1. Routing files never carry working detail.
+2. Hard invariants live in L0/L2, never only in L1 (L1 rotates).
+3. Volatile state never lives in L2 (it would go stale silently).
+4. Every intermediate result is a readable, editable file.
+5. Three-file recovery: `primer.md` + the working ledger + the latest
+   checkpoint must be enough to resume a session.
 
-## Quick Start
+`hooks/post-compact.sh` proves rule 5 directly: after compaction it
+re-injects exactly those three sources, plus the active safety gates,
+using only local file reads (`tests/test_post_compact.sh` stubs `curl`
+to confirm zero network calls).
 
-```bash
-git clone https://github.com/its-stam/stam-os.git
-cd stam-os
-bash setup.sh
-```
+`bin/context-budget.py` measures what layering costs and saves: it
+resolves a `CLAUDE.md`, follows every `@import` recursively, adds
+`rules/*.md` and every `MEMORY.md` (capped at 24,576 bytes each,
+matching what the host actually loads), and reports what a session
+loads at start versus what stays available on demand. It flags an
+oversized `primer.md`, `CLAUDE.md`, or rule file and exits 1.
 
-Setup auto-detects what's installed and skips conflicts. Nothing overwritten without asking.
-
-### Commands
-
-```
-/stamflow plan    → Discovery interview → auto-select agents + gates
-/stamflow dash    → Styled terminal dashboard with metrics
-/stamflow view    → Agent office visualization (3×4 desk grid)
-/stamflow vet     → Thorough exam (8 categories, 60+ checks, scored)
-/stamflow test    → Code + Security + Agents + Gates (--all, --code, --security, --agents, --gates)
-/stamflow graph   → Input → Knowledge Graph → Obsidian
-/graphify         → Convert any input to knowledge graph
-```
-
----
-
-## What's Included
-
-| Component | Source | What |
-|-----------|--------|------|
-| **Gates** | recall-stack | Pre-action enforcement (survives compaction) |
-| **primer.md** | recall-stack | Auto-rewriting project state |
-| **Agents** | agency-agents | 41 curated specialists |
-| **Swarm** | ruflo (optional) | Multi-agent coordination |
-| **Graphify** | built-in | Input → Knowledge Graph |
-| **Obsidian** | templates included | Vault structure + daily notes |
-
----
-
-## File Structure
+## What's in the repo
 
 ```
-stam-os/
-├── core/           # Layer 1-3 (always, no deps)
-├── hooks/          # Layer 4 (shell scripts)
-├── agents/         # Layer 0 (41 curated agents)
-├── converters/     # Multi-tool exporters (claude/opencode/cursor)
-├── graphify/       # Layer 5b (knowledge graph)
-├── skills/         # Domain skill templates (NDA-safe)
-└── docs/           # Guides
+core/
+  CLAUDE.md              L0 identity + agent rules
+  primer.md               L1 routing/state template
+  LAYERS.md                the layer model (this README's basis)
+  KNOWLEDGE.md              the L2 knowledge-base format
+  gates.json                 pre-action safety gates
+  context-management.md       when to /compact vs /clear
+  planmode.md                  discovery-interview workflow
+hooks/
+  session-start.sh        injects git context at session start
+  session-end.sh           promotes repeated lessons to gates
+  pre-action-gate.sh        enforces gates.json before a tool runs
+  post-compact.sh            three-file recovery re-injection
+bin/
+  context-budget.py       measures start-load vs. on-demand bytes
+tests/
+  test_gates.sh            10 gate cases, exit-code assertions
+  test_post_compact.sh      recovery + no-network assertions
+  test_setup.sh              installer idempotency + --force
+  test_session_end.sh         auto-promotion to a gate after 3x
+  test_context_budget.py        layering ratio + flag assertions
+  fixtures/                      synthetic: monolithic/, layered/,
+                                  primer-over-budget/,
+                                  memory-index-over-budget/
+setup.sh                  installer
+test.sh                    runs every proof, prints one total
 ```
 
----
+## Setup
+
+```
+bash setup.sh              # installs into $CLAUDE_CONFIG_DIR or ~/.claude
+bash setup.sh --force      # overwrite existing files
+```
+
+Run the tests:
+
+```
+./test.sh
+```
+
+Check your own config against the budget:
+
+```
+python3 bin/context-budget.py ~/.claude
+python3 bin/context-budget.py ~/.claude --json
+```
 
 ## License
 
-MIT — [Rustam Kohen](https://github.com/its-stam)
+MIT, see `LICENSE`.

@@ -1,10 +1,8 @@
-# Skills (local only — NDA-protected, never commit)
+# Local-only skills, never commit
 skills-local/
 *.env
 *.env.*
 .claude-flow/
 .DS_Store
-recall/__pycache__/
-recall/*.db
-recall/*.npy
-recall/bm25_meta.json
+__pycache__/
+*.pyc

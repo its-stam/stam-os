@@ -26,18 +26,17 @@ Ask these questions (one at a time, conversational):
 ### Phase 2: Analyze
 Based on answers, scan the project and propose:
 
-- **Agents to deploy** (which personas from agents/)
+- **Approach** (which expertise areas the task touches)
 - **Gates to activate** (which safety rules from gates.json)
-- **Memory strategy** (primer.md only / +obsidian / +ruflo)
+- **Memory strategy** (primer.md only / +obsidian)
 - **Hooks needed** (which session lifecycle hooks)
 
 ### Phase 3: Deploy
 Present the plan. User approves → execute:
 
-- Copy selected agents to project
 - Activate relevant gates
 - Set up primer.md for this session
-- Output: "stam-os deployed for [project]. Agents: [list]. Gates: [list]."
+- Output: "Ready for [project]. Focus: [list]. Gates: [list]."
 
 ### Phase 4: Orchestrate
 If multi-agent task:
@@ -47,21 +46,19 @@ If multi-agent task:
 
 ## Example Session
 
-User: /stamflow plan
 Agent: What are you working on?
-User: Machbarkeitsstudie — CAD-Daten mit LLM analysieren
+User: A feasibility study — analyzing CAD export data with an LLM pipeline
 Agent: What field of expertise?
 User: Engineering + Data Science
 Agent: What specific tasks?
-User: Code Review der n8n-Pipeline, Architektur-Doku, Sicherheits-Audit
+User: Pipeline code review, architecture docs, a security audit
 Agent: Scope?
-User: Full project, ~500 LOC, NDA-geschützt
+User: Full project, ~500 LOC, confidential client data
 Agent: [Analyzes...]
 Agent: Plan:
-  - Agents: Security Engineer, Code Reviewer, Software Architect
+  - Focus: security review, architecture review, code review
   - Gates: no-credentials-in-files, no-force-push
-  - Memory: primer.md + Obsidian (NDA-safe, local only)
+  - Memory: primer.md + local knowledge base only (nothing leaves the machine)
   - Hooks: pre-action-gate, post-compact
-  Deploy now?
+  Proceed now?
 User: Yes
-Agent: ✓ stam-os deployed. 3 agents ready. Type /stamflow status for progress.

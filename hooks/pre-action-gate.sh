@@ -2,12 +2,13 @@
 # Pre-Action Gate -- blocks known-bad patterns before tool execution
 # Exit 0 = allow, Exit 2 = block
 
-GATES_FILE="$HOME/.claude/gates.json"
+CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+GATES_FILE="$CONFIG_DIR/gates.json"
 [ ! -f "$GATES_FILE" ] && exit 0
 
 INPUT=$(cat)
 
-RESULT=$(echo "$INPUT" | python3 -c "
+RESULT=$(echo "$INPUT" | GATES_FILE="$GATES_FILE" python3 -c "
 import json, sys, re, os
 
 try:
@@ -18,7 +19,7 @@ except:
 tool = hook_input.get('tool_name', '')
 tool_input = json.dumps(hook_input.get('tool_input', {}))
 
-gates_path = os.path.expanduser('~/.claude/gates.json')
+gates_path = os.environ['GATES_FILE']
 with open(gates_path) as f:
     gates = json.load(f)
 

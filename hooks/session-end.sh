@@ -1,51 +1,29 @@
 #!/bin/bash
-# Layer 4: Fires on Claude Code session end
-# 1. Stores session summary in Hindsight
-# 2. Auto-tracks failures from lessons.md and promotes to gates after 3 occurrences
+# Layer 4: Fires on session end
+# Auto-tracks failures from the lessons file and promotes to a gate after 3 occurrences
 
-HINDSIGHT_URL="${HINDSIGHT_URL:-http://localhost:8888}"
-FAILURES_FILE="$HOME/.claude/failures.json"
-GATES_FILE="$HOME/.claude/gates.json"
+CONFIG_DIR="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
+GATES_FILE="$CONFIG_DIR/gates.json"
+FAILURES_FILE="$CONFIG_DIR/failures.json"
 
-# --- Hindsight retain ---
-BRANCH=""
-LAST_COMMIT=""
-if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-  BRANCH=$(git branch --show-current 2>/dev/null)
-  LAST_COMMIT=$(git log -1 --pretty='%s' 2>/dev/null)
-fi
-
-CONTENT="Session ended $(date). Branch: ${BRANCH:-none}. Last commit: ${LAST_COMMIT:-none}."
-
-JSON_BODY=$(python3 -c "
-import json, sys
-print(json.dumps({'items': [{'content': sys.argv[1]}]}))
-" "$CONTENT" 2>/dev/null)
-
-if [ -n "$JSON_BODY" ]; then
-  curl -sf -X POST "$HINDSIGHT_URL/v1/default/banks/claude-sessions/memories" \
-    -H 'Content-Type: application/json' \
-    -d "$JSON_BODY" \
-    2>/dev/null
-fi
-
-# --- Auto-failure tracking ---
 [ ! -f "$GATES_FILE" ] && exit 0
 [ ! -f "$FAILURES_FILE" ] && echo '{"failures":{}}' > "$FAILURES_FILE"
 
-python3 << 'PYEOF'
+CONFIG_DIR="$CONFIG_DIR" python3 << 'PYEOF'
 import json, re, os, sys
 
-failures_file = os.path.expanduser("~/.claude/failures.json")
-gates_file = os.path.expanduser("~/.claude/gates.json")
+config_dir = os.environ["CONFIG_DIR"]
+failures_file = os.path.join(config_dir, "failures.json")
+gates_file = os.path.join(config_dir, "gates.json")
 
-# Find all lessons.md files across projects
+# Find all lessons files across projects
 lessons_paths = []
-projects_dir = os.path.expanduser("~/.claude/projects")
+projects_dir = os.path.join(config_dir, "projects")
 if os.path.isdir(projects_dir):
     for root, dirs, files in os.walk(projects_dir):
-        if "lessons.md" in files:
-            lessons_paths.append(os.path.join(root, "lessons.md"))
+        for name in ("lessons.md",):
+            if name in files:
+                lessons_paths.append(os.path.join(root, name))
 
 if not lessons_paths:
     sys.exit(0)

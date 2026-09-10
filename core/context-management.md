@@ -35,12 +35,11 @@ When full, automatic compaction happens. Details CAN be lost.
 
 4. **Put learnings in CLAUDE.md.** Anything Claude needs across sessions should be in rules, not rediscovered every time.
 
-## Integration with stam-os
+## Integration with the layers (see core/LAYERS.md)
 
-- **Layer 2 (primer.md)** — Survives `/clear` and `/compact`. Always has current state.
-- **Layer 4 (PostCompact hook)** — Re-injects git context + patterns after compaction.
-- **Layer 3 (Gates)** — Survive everything (hook-level, not prompt-level).
-- **/stamflow context** — Future: unified context dashboard across tools.
+- **L1 (primer.md)** — Survives `/clear` and `/compact`. Always has current state.
+- **L3 (post-compact hook)** — Re-injects primer, ledger tail, and the latest checkpoint after compaction.
+- **L2 (Gates)** — Survive everything (hook-level, not prompt-level).
 
 ## Anti-Patterns
 - ❌ Vaguer prompts to "save tokens" — actually costs more

@@ -26,7 +26,6 @@ This project employs:
 
 - `core/` — Markdown config files + JSON gates
 - `hooks/` — Bash scripts (session lifecycle)
-- `agents/` — Agent persona definitions (markdown)
 - `setup.sh` — Installer
 
 Report: suspicious gate patterns, hook vulnerabilities, credential leakage, prompt injection vectors.
