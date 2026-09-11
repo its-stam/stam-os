@@ -4,6 +4,8 @@ A file layout that keeps an agent's session context small and recoverable:
 routing files stay within a budget, detail lives one layer down, and a
 session resumes after a crash or compaction from three files.
 
+![./test.sh: 37 passed, and the context budget on the layered fixture: 7,740 bytes at start, 26,880 on demand](docs/screenshots/test-and-budget.png)
+
 ## Results
 
 Numbers from `./test.sh`, and from `bin/context-budget.py` run against
